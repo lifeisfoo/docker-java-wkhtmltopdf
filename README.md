@@ -9,7 +9,7 @@ Because Debian jessie, the base image for openjdk images, [has](https://github.c
 ### Why not use jre-alpine as a base?
 [I've make a five minutes try](https://gist.github.com/lifeisfoo/31acf58950a5ff280e5c6cd366bd052c) with oraclejdk-alpine as a base without success due to a [docker bug](https://github.com/docker/docker/issues/27940).
 
-So, I've tried porting the [Docker-Alpine-wkhtmltopdf](https://github.com/alloylab/Docker-Alpine-wkhtmltopdf) method (wkhtmltopdf compilation from source) with a oraclejdk-alpine base image: the build was failing because initially some dependencies weren't found in `/alpine/edge/testing` then the build is really long:
+So, I've tried porting the [Docker-Alpine-wkhtmltopdf](https://github.com/alloylab/Docker-Alpine-wkhtmltopdf) method (wkhtmltopdf compilation from source) with a oraclejdk-alpine base image: the build was failing because initially some dependencies weren't found in `/alpine/edge/testing`:
 
     ERROR: unsatisfiable constraints:
       fonts-base (missing):
