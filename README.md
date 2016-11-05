@@ -3,7 +3,7 @@ A docker image with openjdk 8 jre and [wkhtmltopdf](http://wkhtmltopdf.org)
 
 With this docker image you have both openjdk jre 8 and wkhtmltopdf available (that's what I need now). Wkhtmltopdf is downloaded automatically from the [official binaries](http://wkhtmltopdf.org/downloads.html) during the build.
 
-### Why not use the debiam provided wkhtmltopdf package?
+### Why not use the debian provided wkhtmltopdf package?
 Because Debian jessie, the base image for openjdk images, [has](https://github.com/wkhtmltopdf/wkhtmltopdf/issues/2037) some [problems](http://unix.stackexchange.com/questions/192642/wkhtmltopdf-qxcbconnection-could-not-connect-to-display) with the [included wkhtmltopdf](https://packages.debian.org/jessie/wkhtmltopdf) ("_QXcbConnection: Could not connect to display_" error).
 
 ### Why not use jre-alpine as a base?
