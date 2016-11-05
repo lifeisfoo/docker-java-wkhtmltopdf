@@ -1,21 +1,26 @@
 # docker-java-wkhtmltopdf
-A docker image with openjdk 8 jre and wkhtmltopdf
+A docker image with openjdk 8 jre and [wkhtmltopdf](http://wkhtmltopdf.org)
 
-With this docker image you have both openjdk jre 8 and wkhtmltopdf available (that's what I need now).
+With this docker image you have both openjdk jre 8 and wkhtmltopdf available (that's what I need now). Wkhtmltopdf is downloaded automatically from the [official binaries](http://wkhtmltopdf.org/downloads.html) during the build.
 
-## Why?
-Because Debian jessie, the base image for openjdk images, has some problems with the [included wkhtmltopdf](https://packages.debian.org/jessie/wkhtmltopdf):
-
-- http://unix.stackexchange.com/questions/192642/wkhtmltopdf-qxcbconnection-could-not-connect-to-display
-- https://github.com/wkhtmltopdf/wkhtmltopdf/issues/2037
+### Why not use the debiam provided wkhtmltopdf package?
+Because Debian jessie, the base image for openjdk images, [has](https://github.com/wkhtmltopdf/wkhtmltopdf/issues/2037) some [problems](http://unix.stackexchange.com/questions/192642/wkhtmltopdf-qxcbconnection-could-not-connect-to-display) with the [included wkhtmltopdf](https://packages.debian.org/jessie/wkhtmltopdf) ("_QXcbConnection: Could not connect to display_" error).
 
 ### Why not use jre-alpine as a base?
-[I've make a five minutes try](https://gist.github.com/lifeisfoo/31acf58950a5ff280e5c6cd366bd052c) without success.
-That gist is only a port of the [Docker-Alpine-wkhtmltopdf](https://github.com/alloylab/Docker-Alpine-wkhtmltopdf) base image to the jre-alpine base image. The difference, and probably the cause of the errors, is the alpine version in use.
+[I've make a five minutes try](https://gist.github.com/lifeisfoo/31acf58950a5ff280e5c6cd366bd052c) with oraclejdk-alpine as a base without success due to a [docker bug](https://github.com/docker/docker/issues/27940).
 
-Some useful links about alpine and wkhtmltopdf:
-- https://github.com/wkhtmltopdf/wkhtmltopdf/issues/2554 
-- https://github.com/madnight/docker-alpine-wkhtmltopdf (it includes a custom built binary, not very security-friendly)
+So, I've tried porting the [Docker-Alpine-wkhtmltopdf](https://github.com/alloylab/Docker-Alpine-wkhtmltopdf) method (wkhtmltopdf compilation from source) with a oraclejdk-alpine base image: the build was failing because initially some dependencies weren't found in `/alpine/edge/testing` then the build is really long:
+
+    ERROR: unsatisfiable constraints:
+      fonts-base (missing):
+         required by: world[fonts-base]
+      fonts-extra (missing):
+         required by: world[fonts-extra]
+
+Then I've found a way (_see notes above_) to build wkhtmltopdf from sources on oraclejdk-alpine base image, but the build take a very long time to complete.
+
+Using (today) the Alpine provided package is also unuseful, because, like Debian, the Alpine included package [doesn't works as expected](https://github.com/wkhtmltopdf/wkhtmltopdf/issues/2554).
+Somebody also ended including a [custom built binary](https://github.com/madnight/docker-alpine-wkhtmltopdf) but from my point of view this is not very security-friendly.
 
 ## Usage
 
@@ -44,3 +49,8 @@ Or from URLs:
 ### Help
 
 http://wkhtmltopdf.org/usage/wkhtmltopdf.txt
+
+### Notes
+§ It is possible to manually add single fonts as dependencies because fonts-base and fonts-extra was only meta-packages:
+- http://git.alpinelinux.org/cgit/aports/tree/unmaintained/fonts-base/APKBUILD
+- http://git.alpinelinux.org/cgit/aports/tree/unmaintained/fonts-base/APKBUILD
